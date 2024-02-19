@@ -194,15 +194,21 @@ function M.setup(opts)
       nargs = 0,
       desc = "Start either compose, dockerfile or image from .devcontainer.json",
     })
+    vim.api.nvim_create_user_command("DevcontainerUse", function(params)
+      if (params.args == '') or (params.args == nil) then
+        return
+      end
+      vim.g.devcontainer_target = params.args
+    end,
+    {
+      desc = 'Use a different target e.g. container id instead of default devcontainer.',
+      nargs='?'
+    })
     vim.api.nvim_create_user_command("DevcontainerAttach", function(args)
-      local target = "devcontainer"
+      local target = (vim.g.devcontainer_target ~= nil) and vim.g.devcontainer_target or "devcontainer"
       local command = "nvim"
-      if #args.fargs == 1 then
-        command = args.fargs[1]
-      elseif #args.fargs > 1 then
-        target = args.fargs[1]
+      if #args.fargs >=1 then
         command = args.fargs
-        table.remove(command, 1)
       end
       commands.attach_auto(target, command)
     end, {
@@ -211,14 +217,10 @@ function M.setup(opts)
       complete = container_command_complete,
     })
     vim.api.nvim_create_user_command("DevcontainerExec", function(args)
-      local target = "devcontainer"
+      local target = (vim.g.devcontainer_target ~= nil) and vim.g.devcontainer_target or "devcontainer"
       local command = "nvim"
-      if #args.fargs == 1 then
-        command = args.fargs[1]
-      elseif #args.fargs > 1 then
-        target = args.fargs[1]
+      if #args.fargs >=1 then
         command = args.fargs
-        table.remove(command, 1)
       end
       commands.exec(target, command)
     end, {
