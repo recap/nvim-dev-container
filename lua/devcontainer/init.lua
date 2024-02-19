@@ -210,13 +210,6 @@ function M.setup(opts)
       if #args.fargs >=1 then
         command = args.fargs
       end
-      -- if #args.fargs == 1 then
-      --   command = args.fargs[1]
-      -- elseif #args.fargs > 1 then
-      --   target = args.fargs[1]
-      --   command = args.fargs
-      --   table.remove(command, 1)
-      -- end
       commands.attach_auto(target, command)
     end, {
       nargs = "*",
@@ -224,19 +217,11 @@ function M.setup(opts)
       complete = container_command_complete,
     })
     vim.api.nvim_create_user_command("DevcontainerExec", function(args)
-      -- local target = "devcontainer"
       local target = (vim.g.devcontainer_target ~= nil) and vim.g.devcontainer_target or "devcontainer"
       local command = "nvim"
       if #args.fargs >=1 then
         command = args.fargs
       end
-      -- if #args.fargs == 1 then
-      --   command = args.fargs[1]
-      -- elseif #args.fargs > 1 then
-      --   target = args.fargs[1]
-      --   command = args.fargs
-      --   table.remove(command, 1)
-      -- end
       commands.exec(target, command)
     end, {
       nargs = "*",
